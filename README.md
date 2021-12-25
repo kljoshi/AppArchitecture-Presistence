@@ -1,6 +1,63 @@
- # Room - SleepQualityTracker app
+ # App Architecture-Presistence 
 
-This is the toy app for Lesson 6 of the [Android App Development in Kotlin course on Udacity](https://www.udacity.com/course/???).
+This is the Sleep tracker app for lesson 6 of the Udacity: Developing Android Apps with Kotlin Course. 
+
+- How to store data 
+- Introduction to room data base
+- Using Data Access Object (DAO)
+- Database queries
+- Coroutines - How to make sure your long running database operations don’t slow down the app for the user by using Kotlin coroutines. 
+- Use of safeArgs. 
+
+### Introduction
+In most applications, you have some data that you want to hold onto, even when the user closes and leaves the app. 
+
+For example, you might want to store a playlist or an inventory of game items, records of expenses and income, a catalog of constellations, or sleep data over time. 
+
+In this lesson we are going to build a sleep quality tracker app and use a database to store the sleep data over time. 
+<img width="252" alt="Ul Controller" src="https://user-images.githubusercontent.com/43662326/147375715-9bf2a132-3e9b-45a4-9372-8cc7d64d109d.png">
+
+This app uses a simplified architecture with a UI controller, ViewModel and LiveData, and a room database. 
+
+----
+### What is roommate base? 
+
+Room is a database library that is part of Android jet pack. Room takes care of many of the chores of setting up and configuring a database. And It makes it possible for your app to interact with a database using ordinary function calls. 
+
+----
+### Designing Entities
+
+The first thing we need is data, which in Kotlin and Android, we represent in data classes, and we need a way to act on that data and our database, which in Kotlin would be function call. 
+
+In Room, we need entities and queries. 
+
+#### Entity
+
+Entity represents object or concept to store in the database. Entity class defines a table, each instance is stored as a table row. 
+
+Note: Entity as data class. 
+
+#### Query 
+
+Query is a request of data or information from a database table, or a combination of tables, or a request to perform some action on the data. Ex: inserting or deleting data.   Note: Query as interface. 
+
+----
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## SleepQualityTracker
 
