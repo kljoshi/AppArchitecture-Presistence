@@ -56,31 +56,15 @@ We use data classes to define our tables and we use annotations to specify thing
 3. Identify the primary key by annotating it with @PrimaryKey.
 ```@PrimaryKey(autoGenerate = true)```
 4. Annotate the remaining properties with @ColumnInfo.
-```@Entity(tableName = "daily_sleep_quality_table")
-data class SleepNight(
-    @PrimaryKey(autoGenerate = true)
-    var nightId: Long = 0L,
-
-    @ColumnInfo(name = "start_time_milli")
-    val startTimeMilli: Long = System.currentTimeMillis(),
-
-    @ColumnInfo(name = "end_time_milli")
-    var endTimeMilli: Long = startTimeMilli,
-
-    @ColumnInfo(name = "quality_rating")
-    var sleepQuality: Int = -1
-)```
-
-----
-
-
-
-
-
-
-
-
-
+```@Entity(tableName = "daily_sleep_quality_table")data class SleepNight(```
+```@PrimaryKey(autoGenerate = true)```
+```var nightId: Long = 0L,```
+```@ColumnInfo(name = "start_time_milli")```
+```val startTimeMilli: Long = System.currentTimeMillis(),```
+```@ColumnInfo(name = "end_time_milli")```
+```var endTimeMilli: Long = startTimeMilli,```
+```@ColumnInfo(name = "quality_rating")```
+```var sleepQuality: Int = -1)```
 
 
 
