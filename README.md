@@ -43,7 +43,30 @@ Query is a request of data or information from a database table, or a combinatio
 
 ----
 
+<img width="280" alt="Ul Controller" src="https://user-images.githubusercontent.com/43662326/147375727-2d63828f-4e8d-4a1e-8b6f-c17668c10601.png">
 
+We use data classes to define our tables and we use annotations to specify things such as which property represents the primary key. We create interfaces that define how to interact with the database which is by DAO.
+
+----
+
+### How to create Entity
+1. Create the data class with parameters. Example: ID, start time and end time. 
+2. Annotate the data class with @Entity, and name the table. ```@Entity(tableName = "daily_sleep_quality_table") ```
+3. Identify the primary key by annotating it with @PrimaryKey. ```@PrimaryKey(autoGenerate = true)```
+4. Annotate the remaining properties with @ColumnInfo. ```@Entity(tableName = "daily_sleep_quality_table")
+data class SleepNight(
+    @PrimaryKey(autoGenerate = true)
+    var nightId: Long = 0L,
+
+    @ColumnInfo(name = "start_time_milli")
+    val startTimeMilli: Long = System.currentTimeMillis(),
+
+    @ColumnInfo(name = "end_time_milli")
+    var endTimeMilli: Long = startTimeMilli,
+
+    @ColumnInfo(name = "quality_rating")
+    var sleepQuality: Int = -1
+)```
 
 
 
