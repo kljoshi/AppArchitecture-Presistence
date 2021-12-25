@@ -51,9 +51,12 @@ We use data classes to define our tables and we use annotations to specify thing
 
 ### How to create Entity
 1. Create the data class with parameters. Example: ID, start time and end time. 
-2. Annotate the data class with @Entity, and name the table. ```@Entity(tableName = "daily_sleep_quality_table") ```
-3. Identify the primary key by annotating it with @PrimaryKey. ```@PrimaryKey(autoGenerate = true)```
-4. Annotate the remaining properties with @ColumnInfo. ```@Entity(tableName = "daily_sleep_quality_table")
+2. Annotate the data class with @Entity, and name the table.
+```@Entity(tableName = "daily_sleep_quality_table") ```
+3. Identify the primary key by annotating it with @PrimaryKey.
+```@PrimaryKey(autoGenerate = true)```
+4. Annotate the remaining properties with @ColumnInfo.
+```@Entity(tableName = "daily_sleep_quality_table")
 data class SleepNight(
     @PrimaryKey(autoGenerate = true)
     var nightId: Long = 0L,
