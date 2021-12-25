@@ -56,136 +56,140 @@ We use data classes to define our tables and we use annotations to specify thing
 3. Identify the primary key by annotating it with @PrimaryKey.
 ```@PrimaryKey(autoGenerate = true)```
 4. Annotate the remaining properties with @ColumnInfo.
-```@Entity(tableName = "daily_sleep_quality_table")data class SleepNight(```
-```@PrimaryKey(autoGenerate = true)```
-```var nightId: Long = 0L,```
-```@ColumnInfo(name = "start_time_milli")```
-```val startTimeMilli: Long = System.currentTimeMillis(),```
-```@ColumnInfo(name = "end_time_milli")```
-```var endTimeMilli: Long = startTimeMilli,```
-```@ColumnInfo(name = "quality_rating")```
-```var sleepQuality: Int = -1)```
-
-
-
-
-
-## SleepQualityTracker
-
-The SleepQualityTracker app is a demo app that helps you collect information about your sleep. 
-* Start time
-* End time
-* Quality
-* Time slept
-
-This app demonstrates the following views and techniques:
-* Room database
-* DAO
-* Coroutines
-
-It also uses and builds on the following techniques from previous lessons:
-* Transformation map
-* Data Binding in XML files
-* ViewModel Factory
-* Using Backing Properties to protect MutableLiveData
-* Observable state LiveData variables to trigger navigation
-
-## Screenshots
-
-![Screenshot1](screenshots/sleep_quality_tracker_start.png)
-![Screenshot2](screenshots/sleep_quality_tracker_stop.png)
-![Screenshot3](screenshots/sleep_quality_tracker_quality.png)
-
-## How to use this repo while taking the course
-
-
-Each code repository in this class has a chain of commits that looks like this:
-
-![listofcommits](https://d17h27t6h515a5.cloudfront.net/topher/2017/March/58befe2e_listofcommits/listofcommits.png)
-
-These commits show every step you'll take to create the app. Each commit contains instructions for completing the that step.
-
-Each commit also has a **branch** associated with it of the same name as the commit message, as seen below:
-
-![branches](https://d17h27t6h515a5.cloudfront.net/topher/2017/April/590390fe_branches-ud855/branches-ud855.png
-)
-Access all branches from this tab.
-
-![listofbranches](https://d17h27t6h515a5.cloudfront.net/topher/2017/March/58befe76_listofbranches/listofbranches.png
-)
-
-
-![branchesdropdown](https://d17h27t6h515a5.cloudfront.net/topher/2017/April/590391a3_branches-dropdown-ud855/branches-dropdown-ud855.png
-)
-
-The branches are also accessible from the drop-down in the "Code" tab.
-
-
-## Working with the Course Code
-
-Here are the basic steps for working with and completing exercises in the repo.
-
-The basic steps are:
-
-1. Clone the repo.
-2. Check out the branch corresponding to the step you want to attempt.
-3. Find and complete the TODOs.
-4. Optionally commit your code changes.
-5. Compare your code with the solution.
-6. Repeat steps 2-5 until you've gone trough all the steps to complete the toy app.
-
-
-**Step 1: Clone the repo**
-
-As you go through the course, you'll be instructed to clone the different exercise repositories, so you don't need to set these up now. You can clone a repository from github in a folder of your choice with the command:
-
-```bash
-git clone https://github.com/udacity/REPOSITORY_NAME.git
 ```
+@Entity(tableName = "daily_sleep_quality_table")
+ data class SleepNight(
+  @PrimaryKey(autoGenerate = true)
+  var nightId: Long = 0L,
 
-**Step 2: Check out the step branch**
+  @ColumnInfo(name = "start_time_milli")
+  val startTimeMilli: Long = System.currentTimeMillis(),
 
-As you go through different steps in the code, you'll be told which step you're on, as well as a link to the corresponding branch.
+  @ColumnInfo(name = "end_time_milli")
+  var endTimeMilli: Long = startTimeMilli,
 
-You'll want to check out the branch associated with that step. The command to check out a branch would be:
-
-```bash
-git checkout BRANCH_NAME
+  @ColumnInfo(name = "quality_rating")
+  var sleepQuality: Int = -1)
 ```
+----
 
-**Step 3: Find and complete the TODOs**
+### how to create Data Access Object (DAO)
+When using Room DB, we query the database by defining and calling Kotlin functions in our code that map to SQL queries. We define those mappings in a DAO using annotation and Room creates the necessary code for us. 
 
-Once you've checked out the branch, you'll have the code in the exact state you need. You'll even have TODOs, which are special comments that tell you all the steps you need to complete the exercise. You can easily navigate to all the TODOs using Android Studio's TODO tool. To open the TODO tool, click the button at the bottom of the screen that says TODO. This will display a list of all comments with TODO in the project. 
+DAO Annotations
+- @Insert
+- @Delete
+- @Update
+- @Query
 
-We've numbered the TODO steps so you can do them in order:
-![todos](https://d17h27t6h515a5.cloudfront.net/topher/2017/March/58bf00e7_todos/todos.png
-)
+Steps to create DAO:
+1. Create an interface and annotate it with @Dao.
+2. Add an @Insert function.
+3. Add @Query function
 
-**Step 4: Commit your code changes**
+Note: we can return LiveData in room DB. This is one of the amazing features of room. Room makes sure that this live data is updated whenever the database is updated. This means that we only have to get this list once. Attach an observer to it and then if the data changes, the UI will update itself to show the changed data without use having to get the data again.   This saves time, code complexity and most likely a couple of debugging hours on top. 
 
-After You've completed the TODOs, you can optionally commit your changes. This will allow you to see the code you wrote whenever you return to the branch. The following git code will add and save **all** your changes.
+----
 
-```bash
-git add .
-git commit -m "Your commit message"
-```
+### Creating room database 
+Now that we finally have an entity and a DAO, we can move forward with the database. We need to create an abstract database holder class annotated with database. 
 
-**Step 5: Compare with the solution**
+This class has method that either creates an instance of the database, if it doesn’t exist or returns a reference to an existing database. 
 
-Most exercises will have a list of steps for you to check off in the classroom. Once you've checked these off, you'll see a pop up window with a link to the solution code. Note the **Diff** link:
+Steps to creating a room database:
+1. Create a public abstract class that extends Room database. 
+2. We annotate the class with database in the arguments, declare the entities for the database and set the version number. 
+3. Inside a companion object, we define an abstract method or property that returns database DAO. 
+4. We only need one instance of the same Room database for the whole app, so we make the Room database a singleton. 
+Note: We use Room’s database builder to create the database only if it doesn’t exist. Otherwise, we return the existing database. 
 
-![solutionwindow](https://d17h27t6h515a5.cloudfront.net/topher/2017/March/58bf00f9_solutionwindow/solutionwindow.png
-)
+Note: Meaning of @Volatile annotation - This helps us to make sure the value of Instance is always up to data and the same to all execution threads. The value of a volatile variable will never be cached, and all writes and reads will be done to and from the main memory, it means that changes made by one thread to instance are visible to all other threads immediately.  And we don’t get the situation where, two threads each update the same entity in a cache. 
 
-The **Diff** link will take you to a Github diff as seen below:
-![diff](https://d17h27t6h515a5.cloudfront.net/topher/2017/March/58bf0108_diffsceenshot/diffsceenshot.png
-)
+----
 
-All of the code that was added in the solution is in green, and the removed code (which will usually be the TODO comments) is in red. 
+### Abstract keyword: 
 
-You can also compare your code locally with the branch of the following step.
+Abstract keyword is used to declare abstract classes in Kotlin. And abstract class cannot be instantiated (you cannot create objects of an abstract class). However, you can inherit subclasses from them.
 
-## Report Issues
-Notice any issues with a repository? Please file a github issue in the repository.
+----
 
+### Companion object
 
+Companion object are singleton objects whose properties and functions are tied to a class but not the the instance of that class. 
+
+----
+
+### Adding ViewModel 
+
+https://classroom.udacity.com/courses/ud9012/lessons/fcd3f9aa-3632-4713-a299-ea39939d6fd7/concepts/15877d76-9040-40d6-8978-a8209fa6f627
+
+----
+
+### Multithreading and Coroutines
+
+https://classroom.udacity.com/courses/ud9012/lessons/fcd3f9aa-3632-4713-a299-ea39939d6fd7/concepts/f8c76b29-9f8e-4402-9ff9-d1ec4e3f9312 
+
+#### Multithreading Getting data from the database might take a long time if there are a lot of data. This long running operation should run on a operate thread. 
+ The operating system can enable an application to create more than one tread of execution within a process. This is called multithreading. 
+
+On android, the main thread is a single thread that handles all updates on the UI. The main thread is also the thread that calls all click handlers and other UI and life cycle callbacks. This is why it’s also called the UI thread.  The UI thread is the default thread, meaning unless you explicitly switched threads or use a class that runs on a different thread, everything you do is on the main thread. 
+
+We should never perform long-running operations on the main or UI thread. Because calling code like this from the main thread can cause the app to pause, stutter or even freeze. If the main thread is blocked for too long, the app may even crash and present an application not responding dialogue. 
+
+#### Coroutines
+
+A pattern for performing long-running tasks without blocking the main thread is callbacks. By using callbacks, you can start long running tasks on a background thread.    When a task completes, the callback supplied as an argument is called to inform you of the result on the main thread. 
+
+In Kotlin, we have coroutines to handle long-running tasks elegantly and efficiently. Kotlin coroutines let you convert callback-based code to sequential code. Code written sequentially is typically easier to read and can even use language features such as exceptions. 
+
+In the end, coroutines and call back do exactly the same thing, wait until a result is available from a long-running task and continue execution. 
+
+Characteristics of Coroutines:
+- They are asynchronous
+- Non-blocking
+- And use suspend function to make asynchronous code sequential.
+
+#### What is asynchronous?
+Asynchronous means that a coroutine runs independently from the main execution steps of your program. This could be in parallel, on a separate processor, but could also be that while the rest of the app is, for example, waiting for input.
+
+One of the important aspects of async is that we cannot expect the result is available to us until we explicitly wait for it. For example, let’s say you have a question that requires some research and you ask a colleague to find you the answer, they go off and work on it, which is asynchronously and on a separate thread.  Unless you wait for the answer, you can continue to do other work that does not depend on their answer, until they come back and tell you what the answer is. 
+
+#### Non-blocking 
+Non-blocking means the system is not blocking the main or UI thread. So users will always have the smoothest possible experience, because the UI interaction will always have priority. 
+
+Note: Because our coroutine code is compiled from sequential code, we don’t need to specify callbacks. And for coroutines, the compiler will make sure the results of the coroutines are available before continuing or resuming. 
+
+#### suspend keyword
+
+The keyword suspend is Kotlin’s way of marking a function or a function type available to coroutines. When a coroutine calls a function marked for suspend,  instead of blocking until that function returns like a normal function call, it suspends execution until the result is ready, then it resumes where it left off with the result. Now, while it’s suspended, waiting for a result, it unlocks the threads that its running on, so other functions or coroutines can run. 
+
+<img width="291" alt="Blocked thread" src="https://user-images.githubusercontent.com/43662326/147375878-e53a8374-9b49-49b2-8636-751f80de02a4.png">
+
+So the difference between blocking and suspending is that if a thread is blocked, no other work happens, if the thread is suspended, other work happens until the result is available. 
+
+Be aware that the suspend keyword does not specify this thread code runs on. Suspend functions may run on a background thread or a main thread. 
+
+#### Coroutines need…
+- A job - A job is anything that can be canceled. Jobs can be arranged into parent-child hierarchies so that cancellation of a parent leads to an immediate cancellation of all its children, which is a lot more convenient that if we had to do this manually for each coroutine.   
+- A dispatcher - the dispatcher sends off coroutines to run on various threads. For example, dispatcher.main will run task on the main thread, and dispatcher.IO is for offloading blocking IO tasks to a shared pool of threads.  
+- A scope - the scope combines information, including a job and dispatcher, to define the context in which the coroutine runs. Scopes, keep track of coroutines. When you launch a coroutine, it’s in scope, which means that you’ve said which scope will keep track of the coroutine. 
+----
+
+### Coroutines for Long-running Operations
+
+https://classroom.udacity.com/courses/ud9012/lessons/fcd3f9aa-3632-4713-a299-ea39939d6fd7/concepts/7e5d7478-eca3-466c-bc1b-7997dcab696d 
+
+For more information look at the comment section of SleepTrackerViewModel.kt to learn about coroutines.
+
+----
+
+### Recap
+
+- How to use Room database
+- Created SleepNight data class
+- Created Data Access Object 
+- Room database singleton
+- ViewModelFactory for dependency injection
+- ViewModels
+- Coroutines
+- Observable state variables.
