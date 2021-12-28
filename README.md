@@ -1,4 +1,4 @@
- # App Architecture-Presistence 
+ # App Architecture-Presistence - Lesson 6
 
 This is the Sleep tracker app for lesson 6 of the Udacity: Developing Android Apps with Kotlin Course. 
 
